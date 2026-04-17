@@ -31,7 +31,7 @@ await fastify.register(websocket);
 fastify.register(fastifyStatic, {
   root: path.join(rootDir, '.well-known'),
   prefix: '/.well-known/',
-  decorateReply: false
+  decorateReply: true // Fixed: Now reply.sendFile will work!
 });
 
 // Serve skills directory
