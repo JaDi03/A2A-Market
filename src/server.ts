@@ -56,7 +56,8 @@ fastify.get('/.well-known/agent-jobs.json', async (request, reply) => {
       api_base: `${baseUrl}/v1`,
       websocket: `${wsUrl}/v1/events`,
       job_schema: `${baseUrl}/v1/schemas/job-schema.json`,
-      docs: `${baseUrl}/docs`,
+      docs: `${baseUrl}/onboarding`,
+      onboarding: `${baseUrl}/onboarding`,
       skills: [
         {
           id: "a2a-market-skill",
@@ -122,6 +123,10 @@ fastify.get('/skills/a2a-market/skill.json', async (request, reply) => {
       "Listen to jobs.{id}.evaluated for settlement status."
     ]
   };
+});
+
+fastify.get('/onboarding', async (request, reply) => {
+  return reply.sendFile('onboarding.md', rootDir);
 });
 
 import { wsManager } from './ws-manager.js';

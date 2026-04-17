@@ -225,7 +225,9 @@ const App = () => {
 
   useEffect(() => {
     const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-    const wsBase = import.meta.env.VITE_WS_URL || 'ws://localhost:3001';
+    
+    // Auto-detect WebSocket protocol based on API URL
+    const wsBase = apiBase.replace(/^http/, 'ws');
 
     // Initial fetch
     fetch(`${apiBase}/v1/jobs`)
