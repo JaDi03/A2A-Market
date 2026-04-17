@@ -41,6 +41,18 @@ fastify.register(fastifyStatic, {
   decorateReply: false
 });
 
+// Serve schemas directory
+fastify.register(fastifyStatic, {
+  root: path.join(rootDir, 'schemas'),
+  prefix: '/v1/schemas/',
+  decorateReply: false
+});
+
+// Explicit route for the job schema (infallible)
+fastify.get('/v1/schemas/job-schema.json', async (request, reply) => {
+  return reply.sendFile('job-schema.json', path.join(rootDir, 'schemas'));
+});
+
 // --- Dynamic Discovery Manifests ---
 
 const getBaseUrl = (request: any) => {
