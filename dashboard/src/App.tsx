@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Activity, 
   Cpu, 
@@ -7,7 +7,6 @@ import {
   Terminal, 
   Wifi, 
   WifiOff, 
-  ExternalLink,
   Search,
   CheckCircle2,
   XCircle,
@@ -261,7 +260,6 @@ const App = () => {
   }, []);
 
   const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-  const wsBase = import.meta.env.VITE_WS_URL || 'ws://localhost:3001';
 
   return (
     <div className="flex flex-col h-screen overflow-hidden relative">
