@@ -75,7 +75,7 @@ fastify.get('/.well-known/agent-jobs.json', async (request, reply) => {
     contracts: {
       arc_testnet: {
         agentic_commerce: "0x0747EEf0706327138c69792bF28Cd525089e4583",
-        usdc: "0x406B705910398686d089201103f562F0D90f7457",
+        usdc: "0x3600000000000000000000000000000000000000",
         chain_id: 5042002
       }
     }
@@ -93,10 +93,10 @@ fastify.get('/v1/protocol.json', async (request, reply) => {
     network: {
       name: "Arc Testnet",
       chainId: 5042002,
-      rpc: "https://rpc.arc.testnet.com", // Example RPC
+      rpc: "https://rpc.testnet.arc.network",
       contracts: {
         marketplace: "0x0747EEf0706327138c69792bF28Cd525089e4583",
-        payment_token: "0x406B705910398686d089201103f562F0D90f7457"
+        payment_token: "0x3600000000000000000000000000000000000000"
       }
     },
     endpoints: {
@@ -177,9 +177,9 @@ fastify.register(async (fastify) => {
   fastify.get('/v1/events', { websocket: true }, (socket, req) => {
     fastify.log.info('Agent connected via WebSocket');
     wsManager.addSocket(socket);
-    
-    socket.send(JSON.stringify({ 
-      topic: "system.welcome", 
+
+    socket.send(JSON.stringify({
+      topic: "system.welcome",
       message: "Connected to A2A Market Events",
       supported_topics: ["jobs.new", "jobs.*.submitted", "jobs.*.evaluated"]
     }));
