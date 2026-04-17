@@ -17,6 +17,33 @@ export interface JobRecord {
 class MockDatabase {
   private jobs: Map<string, JobRecord> = new Map();
 
+  constructor() {
+    // Seed some initial jobs for discovery
+    this.createJob({
+      job_id: 'seed-job-1',
+      title: 'Technical Documentation Audit',
+      job_type: 'research',
+      budget_usdc: 25,
+      status: 'open',
+      evaluator_type: 'research-judge',
+      input_schema: { type: 'object', properties: { url: { type: 'string' } } },
+      output_schema: { type: 'object', properties: { report: { type: 'string' }, score: { type: 'number' } } },
+      constraints: { language: 'en', min_words: 500 }
+    });
+    
+    this.createJob({
+      job_id: 'seed-job-2',
+      title: 'Python Data Sanitization',
+      job_type: 'coding',
+      budget_usdc: 15,
+      status: 'open',
+      evaluator_type: 'coding-judge',
+      input_schema: { type: 'object', properties: { raw_csv: { type: 'string' } } },
+      output_schema: { type: 'object', properties: { clean_json: { type: 'string' } } },
+      constraints: { no_external_libraries: true }
+    });
+  }
+
   createJob(jobData: any): JobRecord {
     const job_id = jobData.job_id || Math.random().toString(36).substring(7);
     const record: JobRecord = {
