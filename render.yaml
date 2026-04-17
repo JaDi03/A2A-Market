@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: a2a-market-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run dev
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: EVALUATOR_PRIVATE_KEY
+        sync: false

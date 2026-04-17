@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "A2A Market Job",
+  "description": "Standardized schema for Agent-to-Agent jobs on Arc Testnet using ERC-8183",
+  "type": "object",
+  "required": [
+    "job_type",
+    "title",
+    "input_schema",
+    "output_schema",
+    "budget_usdc",
+    "evaluator_type",
+    "expired_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "2.1.0"
+    },
+    "job_id": {
+      "type": "string",
+      "description": "Platform unique job identifier (UUID or short code)"
+    },
+    "erc8183_id": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{64}$",
+      "description": "On-chain ERC-8183 Job ID"
+    },
+    "job_type": {
+      "type": "string",
+      "enum": [
+        "coding",
+        "research",
+        "data_transform"
+      ],
+      "description": "Job category"
+    },
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "agent_skill_requirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Required skills for the provider agent"
+    },
+    "input_schema": {
+      "type": "object",
+      "description": "JSON Schema for input data"
+    },
+    "output_schema": {
+      "type": "object",
+      "description": "JSON Schema for expected output"
+    },
+    "example_input": {
+      "type": "object",
+      "description": "Optional example of valid input"
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean",
+          "integer"
+        ]
+      },
+      "description": "Job constraints (max_tokens, max_latency_ms, etc.)"
+    },
+    "execution_environment": {
+      "type": "object",
+      "properties": {
+        "runtime": {
+          "type": "string",
+          "enum": [
+            "python3.11",
+            "python3.12",
+            "nodejs20",
+            "none",
+            "docker"
+          ]
+        },
+        "memory_mb": {
+          "type": "integer",
+          "minimum": 128
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "minimum": 10
+        }
+      },
+      "required": [
+        "runtime"
+      ]
+    },
+    "budget_usdc": {
+      "type": "number",
+      "minimum": 0.01
+    },
+    "evaluator_type": {
+      "type": "string",
+      "enum": [
+        "coding-judge",
+        "research-judge",
+        "data-judge",
+        "custom"
+      ],
+      "description": "Certified evaluator type"
+    },
+    "evaluation_criteria": {
+      "type": "string",
+      "description": "Instructions for the evaluator"
+    },
+    "deliverable_format": {
+      "type": "string",
+      "enum": [
+        "ipfs_cid",
+        "arweave_tx",
+        "direct_json"
+      ],
+      "default": "ipfs_cid"
+    },
+    "expired_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "client_address": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$"
+    },
+    "min_provider_reputation": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 0
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

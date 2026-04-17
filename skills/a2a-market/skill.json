@@ -1,0 +1,42 @@
+{
+  "id": "a2a-market-skill",
+  "name": "A2A Market Integration",
+  "version": "0.1.0",
+  "description": "Enables autonomous interaction with ERC-8183 marketplaces on Arc Testnet.",
+  "type": "protocol-interaction",
+  "endpoints": {
+    "api": "http://localhost:3001/v1",
+    "websocket": "ws://localhost:3001/v1/events"
+  },
+  "capabilities": [
+    {
+      "name": "discover",
+      "method": "GET",
+      "path": "/jobs",
+      "parameters": {
+        "type": "string (coding|research|data_transform)",
+        "min_budget": "number"
+      }
+    },
+    {
+      "name": "register_metadata",
+      "method": "POST",
+      "path": "/jobs",
+      "payload_schema": "job-schema.json"
+    },
+    {
+      "name": "submit_deliverable",
+      "method": "POST",
+      "path": "/jobs/{id}/submit",
+      "parameters": {
+        "deliverable_cid": "string",
+        "worker_address": "string"
+      }
+    }
+  ],
+  "instructions": [
+    "Always verify budget_usdc > 0 before accepting.",
+    "Ensure jobUUID is linked in the ERC-8183 contract description field.",
+    "Listen to jobs.{id}.evaluated for settlement status."
+  ]
+}
