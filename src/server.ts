@@ -43,21 +43,28 @@ fastify.register(fastifyStatic, {
 
 // --- Dynamic Discovery Manifests ---
 
-fastify.get('/.well-known/agent-jobs.json', async (request, reply) => {
-  const protocol = request.protocol;
+const getBaseUrl = (request: any) => {
   const host = request.hostname;
-  const baseUrl = `${protocol}://${host}`;
-  const wsUrl = `${protocol === 'https' ? 'wss' : 'ws'}://${host}`;
+  const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+  const protocol = isLocal ? 'http' : 'https'; // Force https for production
+  return `${protocol}://${host}`;
+};
+
+fastify.get('/.well-known/agent-jobs.json', async (request, reply) => {
+  const baseUrl = getBaseUrl(request);
+  const wsProtocol = baseUrl.startsWith('https') ? 'wss' : 'ws';
+  const host = request.hostname;
 
   return {
     name: "A2A Market",
     description: "Agent-to-Agent Marketplace Protocol",
+    version: "1.0.0",
     links: {
       api_base: `${baseUrl}/v1`,
-      websocket: `${wsUrl}/v1/events`,
+      websocket: `${wsProtocol}://${host}/v1/events`,
       job_schema: `${baseUrl}/v1/schemas/job-schema.json`,
-      docs: `${baseUrl}/onboarding`,
       onboarding: `${baseUrl}/onboarding`,
+      metadata: `${baseUrl}/v1/protocol.json`,
       skills: [
         {
           id: "a2a-market-skill",
@@ -75,11 +82,44 @@ fastify.get('/.well-known/agent-jobs.json', async (request, reply) => {
   };
 });
 
-fastify.get('/skills/a2a-market/skill.json', async (request, reply) => {
-  const protocol = request.protocol;
+// The "Welcome Package" for Agents (Unified Metadata)
+fastify.get('/v1/protocol.json', async (request, reply) => {
+  const baseUrl = getBaseUrl(request);
+  const wsProtocol = baseUrl.startsWith('https') ? 'wss' : 'ws';
   const host = request.hostname;
-  const baseUrl = `${protocol}://${host}`;
-  const wsUrl = `${protocol === 'https' ? 'wss' : 'ws'}://${host}`;
+
+  return {
+    protocol: "ERC-8183-Agentic-Commerce",
+    network: {
+      name: "Arc Testnet",
+      chainId: 5042002,
+      rpc: "https://rpc.arc.testnet.com", // Example RPC
+      contracts: {
+        marketplace: "0x0747EEf0706327138c69792bF28Cd525089e4583",
+        payment_token: "0x406B705910398686d089201103f562F0D90f7457"
+      }
+    },
+    endpoints: {
+      rest: `${baseUrl}/v1`,
+      realtime: `${wsProtocol}://${host}/v1/events`
+    },
+    capabilities: {
+      discovery: { method: "GET", path: "/jobs", query: ["type", "min_budget"] },
+      publishing: { method: "POST", path: "/jobs", schema: `${baseUrl}/v1/schemas/job-schema.json` },
+      submission: { method: "POST", path: "/jobs/{id}/submit" }
+    },
+    judge: {
+      name: "Gemini 2.0 Flash",
+      role: "Neutral Protocol Evaluator",
+      verification_method: "Double-blind schema validation"
+    }
+  };
+});
+
+fastify.get('/skills/a2a-market/skill.json', async (request, reply) => {
+  const baseUrl = getBaseUrl(request);
+  const wsProtocol = baseUrl.startsWith('https') ? 'wss' : 'ws';
+  const host = request.hostname;
 
   return {
     id: "a2a-market-skill",
@@ -89,7 +129,7 @@ fastify.get('/skills/a2a-market/skill.json', async (request, reply) => {
     type: "protocol-interaction",
     endpoints: {
       api: `${baseUrl}/v1`,
-      websocket: `${wsUrl}/v1/events`
+      websocket: `${wsProtocol}://${host}/v1/events`
     },
     capabilities: [
       {

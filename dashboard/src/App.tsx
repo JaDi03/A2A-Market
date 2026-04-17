@@ -54,6 +54,37 @@ const MOCK_AGENTS: Agent[] = [
   { address: '0xC1e...9b7', type: 'data transform', status: 'idle', jobs_completed: 87, success_rate: '99.1%' },
 ];
 
+const INITIAL_JOBS: Job[] = [
+  {
+    job_id: 'seed-job-1',
+    status: 'open',
+    created_at: new Date().toISOString(),
+    data: {
+      title: 'Technical Documentation Audit',
+      job_type: 'research',
+      budget_usdc: 25,
+      evaluator_type: 'research-judge',
+      input_schema: { type: 'object', properties: { url: { type: 'string' } } },
+      output_schema: { type: 'object', properties: { report: { type: 'string' }, score: { type: 'number' } } },
+      constraints: { language: 'en', min_words: 500 }
+    }
+  },
+  {
+    job_id: 'seed-job-2',
+    status: 'open',
+    created_at: new Date().toISOString(),
+    data: {
+      title: 'Python Data Sanitization',
+      job_type: 'coding',
+      budget_usdc: 15,
+      evaluator_type: 'coding-judge',
+      input_schema: { type: 'object', properties: { raw_csv: { type: 'string' } } },
+      output_schema: { type: 'object', properties: { clean_json: { type: 'string' } } },
+      constraints: { no_external_libraries: true }
+    }
+  }
+];
+
 // --- Components ---
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -218,7 +249,7 @@ const JobCard = ({ job, onClick }: { job: Job, onClick: () => void }) => (
 );
 
 const App = () => {
-  const [jobs, setJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<Job[]>(INITIAL_JOBS);
   const [agents] = useState<Agent[]>(MOCK_AGENTS);
   const [wsConnected, setWsConnected] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
